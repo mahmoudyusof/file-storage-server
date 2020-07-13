@@ -1,25 +1,20 @@
-import java.io.File;
+import java.net.*;
+import java.util.Scanner;
 import java.io.IOException;
 
-class Server {
-  public static void main(String[] args) {
-    if (args.length > 0) {
-      String command = args[0];
-      switch (command) {
-        case ("touch"):
-          try {
-            String fileName = args[1];
-            File fileObj = new File(fileName);
-            if (fileObj.createNewFile()) {
-              System.out.println("File Created Successfully");
-            } else {
-              System.out.println("File with this name already exists");
-            }
-          } catch (IOException e) {
-            System.out.println("Something Went Wrong");
-            e.printStackTrace();
-          }
+public class Server {
+  public static void main(String[] args) throws IOException {
+    ServerSocket ss = new ServerSocket(5000);
+    Socket s = ss.accept();
+    Scanner scan = new Scanner(s.getInputStream());
+    String msg = "";
+    while (true) {
+      msg = scan.nextLine();
+      if (msg.equals("quit")) {
+        break;
       }
+      System.out.println(msg);
     }
+
   }
 }
