@@ -3,16 +3,23 @@ import java.io.IOException;
 
 class Server {
   public static void main(String[] args) {
-    try {
-      String fileName = args.length > 0 ? args[0] : "FileName.txt";
-      File fileObj = new File("ignore/" + fileName);
-      if (fileObj.createNewFile()) {
-        System.out.println("File Created Successfully");
-      } else {
-        System.out.println("File with this name already exists");
+    if (args.length > 0) {
+      String command = args[0];
+      switch (command) {
+        case ("touch"):
+          try {
+            String fileName = args[1];
+            File fileObj = new File(fileName);
+            if (fileObj.createNewFile()) {
+              System.out.println("File Created Successfully");
+            } else {
+              System.out.println("File with this name already exists");
+            }
+          } catch (IOException e) {
+            System.out.println("Something Went Wrong");
+            e.printStackTrace();
+          }
       }
-    } catch (IOException e) {
-      System.out.println("Something Went Wrong");
     }
   }
 }
