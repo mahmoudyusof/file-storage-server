@@ -6,29 +6,37 @@ import commands.*;
 public class Server {
   public static void main(String[] args) throws IOException {
     ServerSocket ss = new ServerSocket(5000);
+    System.out.println("Server running on localhost:5000 ...");
     Socket s = ss.accept();
+    System.out.println("Client Connected.");
 
-    HashMap<String, Command> CMDs = new HashMap<>();
-    CMDs.put("touch", Commands.touch);
+    Commands.init();
+
+    HashMap<String, Command> CMDs = Commands.CMDs;
 
     DataInputStream dis = new DataInputStream(s.getInputStream());
     DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-    String msg = "";
+    String line = "";
+    String[] splits;
 
     while (true) {
-      msg = dis.readUTF();
+      line = dis.readUTF();
+      splits = line.split(" ");
 
-      if (msg.equals("quit")) {
+      if (splits[0].equals("quit")) {
         dos.writeUTF("bye!");
         break;
       } else {
-        if (CMDs.containsKey(msg)) {
-          CMDs.get(msg).run();
+        if (CMDs.containsKey(splits[0])) {
+          if (splits.length > 1) {
+            Commands.setPath(splits[1]);
+          }
+          dos.writeUTF(CMDs.get(splits[0]).run());
         } else {
           dos.writeUTF("This command doesn't exist");
-          dos.flush();
         }
+        dos.flush();
       }
     }
 
