@@ -17,6 +17,9 @@ public class Commands {
 
   private static Command touch = new Command() {
     public String run() {
+      if (path.equals("")) {
+        return "Please provide a file name";
+      }
       try {
         File file = new File(path);
         if (file.createNewFile()) {
@@ -33,6 +36,9 @@ public class Commands {
   private static Command mkdir = new Command() {
     public String run() {
       try {
+        if (path.equals("")) {
+          return "Please provide a directory name";
+        }
         File dir = new File(path);
         if (dir.mkdirs()) {
           return "Directory created successfully!";

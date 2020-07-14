@@ -33,6 +33,7 @@ public class Server {
             Commands.setPath(splits[1]);
           }
           dos.writeUTF(CMDs.get(splits[0]).run());
+          Commands.setPath("");
         } else {
           dos.writeUTF("This command doesn't exist");
         }
