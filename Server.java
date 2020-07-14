@@ -19,6 +19,7 @@ public class Server {
 
     String line = "";
     String[] splits;
+    String response = "";
 
     while (true) {
       line = dis.readUTF();
@@ -32,7 +33,8 @@ public class Server {
           if (splits.length > 1) {
             Commands.setPath(splits[1]);
           }
-          dos.writeUTF(CMDs.get(splits[0]).run());
+          response = CMDs.get(splits[0]).run();
+          dos.writeUTF(response);
           Commands.setPath("");
         } else {
           dos.writeUTF("This command doesn't exist");

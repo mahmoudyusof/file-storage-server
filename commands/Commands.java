@@ -11,6 +11,7 @@ public class Commands {
     CMDs.put("touch", touch);
     CMDs.put("mkdir", mkdir);
     CMDs.put("clear", clear);
+    CMDs.put("ls", listDir);
   }
 
   private static String path = "";
@@ -35,16 +36,35 @@ public class Commands {
 
   private static Command mkdir = new Command() {
     public String run() {
+      if (path.equals("")) {
+        return "Please provide a directory name";
+      }
       try {
-        if (path.equals("")) {
-          return "Please provide a directory name";
-        }
         File dir = new File(path);
         if (dir.mkdirs()) {
           return "Directory created successfully!";
         } else {
           return "Directory already exists";
         }
+      } catch (Exception e) {
+        return e.getMessage();
+      }
+    }
+  };
+
+  private static Command listDir = new Command() {
+    public String run() {
+      try {
+        File dirToList = new File(path);
+        String[] items = dirToList.list();
+        if (items == null) {
+          return "No such file or directory";
+        }
+        String response = "";
+        for (String item : items) {
+          response += item + "  ";
+        }
+        return response;
       } catch (Exception e) {
         return e.getMessage();
       }
