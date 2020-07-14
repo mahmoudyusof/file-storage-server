@@ -1,20 +1,41 @@
 import java.net.*;
-import java.util.Scanner;
-import java.io.IOException;
+import java.util.HashMap;
+import java.io.*;
+import commands.*;
 
 public class Server {
   public static void main(String[] args) throws IOException {
     ServerSocket ss = new ServerSocket(5000);
     Socket s = ss.accept();
-    Scanner scan = new Scanner(s.getInputStream());
+
+    HashMap<String, Command> CMDs = new HashMap<>();
+    CMDs.put("touch", Commands.touch);
+
+    DataInputStream dis = new DataInputStream(s.getInputStream());
+    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
     String msg = "";
+
     while (true) {
-      msg = scan.nextLine();
+      msg = dis.readUTF();
+
       if (msg.equals("quit")) {
+        dos.writeUTF("bye!");
         break;
+      } else {
+        if (CMDs.containsKey(msg)) {
+          CMDs.get(msg).run();
+        } else {
+          dos.writeUTF("This command doesn't exist");
+          dos.flush();
+        }
       }
-      System.out.println(msg);
     }
+
+    dos.close();
+    dis.close();
+    s.close();
+    ss.close();
 
   }
 }
