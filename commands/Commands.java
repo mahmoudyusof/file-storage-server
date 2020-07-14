@@ -12,6 +12,7 @@ public class Commands {
     CMDs.put("mkdir", mkdir);
     CMDs.put("clear", clear);
     CMDs.put("ls", listDir);
+    CMDs.put("cwd", getWorkingDir);
   }
 
   private static String path = "";
@@ -54,6 +55,9 @@ public class Commands {
 
   private static Command listDir = new Command() {
     public String run() {
+      if (path.equals("")) {
+        path = getWorkingDir.run();
+      }
       try {
         File dirToList = new File(path);
         String[] items = dirToList.list();
@@ -68,6 +72,12 @@ public class Commands {
       } catch (Exception e) {
         return e.getMessage();
       }
+    }
+  };
+
+  private static Command getWorkingDir = new Command() {
+    public String run() {
+      return System.getProperty("user.dir");
     }
   };
 
