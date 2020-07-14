@@ -1,6 +1,7 @@
 package commands;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class Commands {
@@ -13,6 +14,7 @@ public class Commands {
     CMDs.put("clear", clear);
     CMDs.put("ls", listDir);
     CMDs.put("cwd", getWorkingDir);
+    CMDs.put("rm", removeFile);
   }
 
   private static String path = "";
@@ -78,6 +80,42 @@ public class Commands {
   private static Command getWorkingDir = new Command() {
     public String run() {
       return System.getProperty("user.dir");
+    }
+  };
+
+  private static Command removeFile = new Command() {
+    public String run() {
+      if (path.equals("")) {
+        return "Please provide a file name";
+      }
+      try {
+        File toDelete = new File(path);
+        String response = toDelete.isDirectory() ? "Direcotry deleted Successfully" : "File deleted successfully";
+        this.delete(toDelete);
+        return response;
+      } catch (Exception e) {
+        return e.getMessage();
+      }
+    }
+
+    private void delete(File file) throws IOException {
+      if (file.isDirectory()) {
+        if (file.list().length == 0) {
+          file.delete();
+        } else {
+          String files[] = file.list();
+          for (String temp : files) {
+            File fileDelete = new File(file, temp);
+
+            delete(fileDelete);
+          }
+          if (file.list().length == 0) {
+            file.delete();
+          }
+        }
+      } else {
+        file.delete();
+      }
     }
   };
 
