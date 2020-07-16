@@ -12,8 +12,6 @@ public class Server {
 
     Commands.init();
 
-    HashMap<String, Command> CMDs = Commands.CMDs;
-
     DataInputStream dis = new DataInputStream(s.getInputStream());
     DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
@@ -31,11 +29,11 @@ public class Server {
         dos.writeUTF("bye!");
         break;
       } else {
-        if (CMDs.containsKey(splits[0])) {
+        if (Commands.CMDs.containsKey(splits[0])) {
           if (splits.length > 1) {
             Commands.setPath(splits[1]);
           }
-          response = CMDs.get(splits[0]).run();
+          response = Commands.CMDs.get(splits[0]).run();
           dos.writeUTF(response);
           Commands.setPath("");
         } else {

@@ -122,8 +122,12 @@ public class Commands {
     public String run() {
       try {
         File dir = new File(cwd + path);
-        cwd = dir.getAbsolutePath() + File.separator;
-        return "Changed Directory!";
+        if (dir.isDirectory()) {
+          cwd = dir.getCanonicalPath() + File.separator;
+          return "Changed Directory!";
+        } else {
+          return "No such directory";
+        }
       } catch (Exception e) {
         return e.getMessage();
       }
