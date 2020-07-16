@@ -15,6 +15,7 @@ public class Commands {
     CMDs.put("ls", listDir);
     CMDs.put("cwd", getWorkingDir);
     CMDs.put("rm", removeFile);
+    CMDs.put("cd", changeDirectory);
   }
 
   private static String path = "";
@@ -113,6 +114,18 @@ public class Commands {
         }
       } else {
         file.delete();
+      }
+    }
+  };
+
+  private static Command changeDirectory = new Command() {
+    public String run() {
+      try {
+        File dir = new File(cwd + path);
+        cwd = dir.getAbsolutePath() + File.separator;
+        return "Changed Directory!";
+      } catch (Exception e) {
+        return e.getMessage();
       }
     }
   };
