@@ -21,6 +21,8 @@ public class Server {
     String[] splits;
     String response = "";
 
+    dos.writeUTF(Commands.cwd);
+
     while (true) {
       line = dis.readUTF();
       splits = line.split(" ");
@@ -39,6 +41,7 @@ public class Server {
         } else {
           dos.writeUTF("This command doesn't exist");
         }
+        dos.writeUTF(Commands.cwd);
         dos.flush();
       }
     }

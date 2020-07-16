@@ -14,8 +14,8 @@ public class Client {
     Scanner scan = new Scanner(System.in);
     String msg = "";
     String res = "";
-
-    System.out.print("\u001B[32mdrive@mahmoud\u001B[0m$ ");
+    res = dis.readUTF();
+    System.out.print("\u001B[32m" + res + "\u001B[0m$ ");
     while (true) {
       msg = scan.nextLine();
       dos.writeUTF(msg);
@@ -27,7 +27,8 @@ public class Client {
       if (res.equals("bye!")) {
         break;
       }
-      System.out.print("\u001B[32mdrive@mahmoud\u001B[0m$ ");
+      res = dis.readUTF();
+      System.out.print("\u001B[32m" + res + "\u001B[0m$ ");
 
     }
 

@@ -18,6 +18,7 @@ public class Commands {
   }
 
   private static String path = "";
+  public static String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/ignore/";
 
   private static Command touch = new Command() {
     public String run() {
@@ -25,7 +26,7 @@ public class Commands {
         return "Please provide a file name";
       }
       try {
-        File file = new File(path);
+        File file = new File(cwd + path);
         if (file.createNewFile()) {
           return "File created successfully!";
         } else {
@@ -43,7 +44,7 @@ public class Commands {
         return "Please provide a directory name";
       }
       try {
-        File dir = new File(path);
+        File dir = new File(cwd + path);
         if (dir.mkdirs()) {
           return "Directory created successfully!";
         } else {
@@ -57,11 +58,8 @@ public class Commands {
 
   private static Command listDir = new Command() {
     public String run() {
-      if (path.equals("")) {
-        path = getWorkingDir.run();
-      }
       try {
-        File dirToList = new File(path);
+        File dirToList = new File(cwd + path);
         String[] items = dirToList.list();
         if (items == null) {
           return "No such file or directory";
@@ -79,7 +77,7 @@ public class Commands {
 
   private static Command getWorkingDir = new Command() {
     public String run() {
-      return System.getProperty("user.dir");
+      return cwd;
     }
   };
 
@@ -89,7 +87,7 @@ public class Commands {
         return "Please provide a file name";
       }
       try {
-        File toDelete = new File(path);
+        File toDelete = new File(cwd + path);
         String response = toDelete.isDirectory() ? "Direcotry deleted Successfully" : "File deleted successfully";
         this.delete(toDelete);
         return response;
