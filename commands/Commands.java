@@ -1,5 +1,6 @@
 package commands;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,78 +25,78 @@ public class Commands {
   public static String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/ignore/";
 
   private static Command touch = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
-        return "Please provide a file name";
+        dos.writeUTF("Please provide a file name");
       }
       try {
         File file = new File(cwd + srcPath);
         if (file.createNewFile()) {
-          return "File created successfully!";
+          dos.writeUTF("File created successfully!");
         } else {
-          return "File already exists";
+          dos.writeUTF("File already exists");
         }
       } catch (Exception e) {
-        return e.getMessage();
+        dos.writeUTF(e.getMessage());
       }
     }
   };
 
   private static Command mkdir = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
-        return "Please provide a directory name";
+        dos.writeUTF("Please provide a directory name");
       }
       try {
         File dir = new File(cwd + srcPath);
         if (dir.mkdirs()) {
-          return "Directory created successfully!";
+          dos.writeUTF("Directory created successfully!");
         } else {
-          return "Directory already exists";
+          dos.writeUTF("Directory already exists");
         }
       } catch (Exception e) {
-        return e.getMessage();
+        dos.writeUTF(e.getMessage());
       }
     }
   };
 
   private static Command listDir = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       try {
         File dirToList = new File(cwd + srcPath);
         String[] items = dirToList.list();
         if (items == null) {
-          return "No such file or directory";
+          dos.writeUTF("No such file or directory");
         }
         String response = "";
         for (String item : items) {
           response += item + "  ";
         }
-        return response;
+        dos.writeUTF(response);
       } catch (Exception e) {
-        return e.getMessage();
+        dos.writeUTF(e.getMessage());
       }
     }
   };
 
   private static Command getWorkingDir = new Command() {
-    public String run() {
-      return cwd;
+    public void run(DataOutputStream dos) throws IOException {
+      dos.writeUTF(cwd);
     }
   };
 
   private static Command removeFile = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
-        return "Please provide a file name";
+        dos.writeUTF("Please provide a file name");
       }
       try {
         File toDelete = new File(cwd + srcPath);
         String response = toDelete.isDirectory() ? "Direcotry deleted Successfully" : "File deleted successfully";
         this.delete(toDelete);
-        return response;
+        dos.writeUTF(response);
       } catch (Exception e) {
-        return e.getMessage();
+        dos.writeUTF(e.getMessage());
       }
     }
 
@@ -121,46 +122,46 @@ public class Commands {
   };
 
   private static Command changeDirectory = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       try {
         File dir = new File(cwd + srcPath);
         if (dir.isDirectory()) {
           cwd = dir.getCanonicalPath() + File.separator;
-          return "Changed Directory!";
+          dos.writeUTF("Changed Directory!");
         } else {
-          return "No such directory";
+          dos.writeUTF("No such directory");
         }
       } catch (Exception e) {
-        return e.getMessage();
+        dos.writeUTF(e.getMessage());
       }
     }
   };
 
   private static Command rename = new Command() {
-    public String run() {
+    public void run(DataOutputStream dos) throws IOException {
       try {
         File src = new File(cwd + srcPath);
         File trgt = new File(cwd + targetPath);
         if (!src.exists()) {
-          return "No such file or directory!";
+          dos.writeUTF("No such file or directory!");
         }
         if (trgt.exists()) {
-          return "Target file name already exists!";
+          dos.writeUTF("Target file name already exists!");
         }
         if (src.renameTo(trgt)) {
-          return "File moved successfully";
+          dos.writeUTF("File moved successfully");
         } else {
-          return "Couldn't move file";
+          dos.writeUTF("Couldn't move file");
         }
       } catch (Exception e) {
-        return "Couldn't move file";
+        dos.writeUTF("Couldn't move file");
       }
     }
   };
 
   private static Command clear = new Command() {
-    public String run() {
-      return "\033[H\033[2J";
+    public void run(DataOutputStream dos) throws IOException {
+      dos.writeUTF("\033[H\033[2J");
     }
   };
 

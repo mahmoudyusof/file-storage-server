@@ -1,5 +1,8 @@
 package commands;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public interface Command {
-  String run();
+  public void run(DataOutputStream dos) throws IOException;
 }
