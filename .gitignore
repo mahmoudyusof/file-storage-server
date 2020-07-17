@@ -1,3 +1,4 @@
 *.class
 ignore/
+downloads/
 .vscode/

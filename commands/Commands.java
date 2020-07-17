@@ -3,6 +3,7 @@ package commands;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 
 public class Commands {
@@ -18,6 +19,7 @@ public class Commands {
     CMDs.put("rm", removeFile);
     CMDs.put("cd", changeDirectory);
     CMDs.put("mv", rename);
+    CMDs.put("cp", copy);
   }
 
   private static String srcPath = "";
@@ -28,6 +30,7 @@ public class Commands {
     public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
+        return;
       }
       try {
         File file = new File(cwd + srcPath);
@@ -46,6 +49,7 @@ public class Commands {
     public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a directory name");
+        return;
       }
       try {
         File dir = new File(cwd + srcPath);
@@ -67,6 +71,7 @@ public class Commands {
         String[] items = dirToList.list();
         if (items == null) {
           dos.writeUTF("No such file or directory");
+          return;
         }
         String response = "";
         for (String item : items) {
@@ -89,6 +94,7 @@ public class Commands {
     public void run(DataOutputStream dos) throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
+        return;
       }
       try {
         File toDelete = new File(cwd + srcPath);
@@ -144,15 +150,40 @@ public class Commands {
         File trgt = new File(cwd + targetPath);
         if (!src.exists()) {
           dos.writeUTF("No such file or directory!");
+          return;
         }
         if (trgt.exists()) {
           dos.writeUTF("Target file name already exists!");
+          return;
         }
         if (src.renameTo(trgt)) {
           dos.writeUTF("File moved successfully");
         } else {
           dos.writeUTF("Couldn't move file");
         }
+      } catch (Exception e) {
+        dos.writeUTF("Couldn't move file");
+      }
+    }
+  };
+
+  private static Command copy = new Command() {
+    public void run(DataOutputStream dos) throws IOException {
+      try {
+        File src = new File(cwd + srcPath);
+        File trgt = new File(cwd + targetPath);
+        if (!src.exists()) {
+          dos.writeUTF("No such file or directory!");
+          return;
+        }
+        if (trgt.exists()) {
+          dos.writeUTF("Target file name already exists!");
+          return;
+        }
+
+        Files.copy(src.toPath(), trgt.toPath());
+        dos.writeUTF("File moved successfully");
+
       } catch (Exception e) {
         dos.writeUTF("Couldn't move file");
       }
