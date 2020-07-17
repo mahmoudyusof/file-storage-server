@@ -16,18 +16,20 @@ public class Commands {
     CMDs.put("cwd", getWorkingDir);
     CMDs.put("rm", removeFile);
     CMDs.put("cd", changeDirectory);
+    CMDs.put("mv", rename);
   }
 
-  private static String path = "";
+  private static String srcPath = "";
+  private static String targetPath = "";
   public static String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/ignore/";
 
   private static Command touch = new Command() {
     public String run() {
-      if (path.equals("")) {
+      if (srcPath.equals("")) {
         return "Please provide a file name";
       }
       try {
-        File file = new File(cwd + path);
+        File file = new File(cwd + srcPath);
         if (file.createNewFile()) {
           return "File created successfully!";
         } else {
@@ -41,11 +43,11 @@ public class Commands {
 
   private static Command mkdir = new Command() {
     public String run() {
-      if (path.equals("")) {
+      if (srcPath.equals("")) {
         return "Please provide a directory name";
       }
       try {
-        File dir = new File(cwd + path);
+        File dir = new File(cwd + srcPath);
         if (dir.mkdirs()) {
           return "Directory created successfully!";
         } else {
@@ -60,7 +62,7 @@ public class Commands {
   private static Command listDir = new Command() {
     public String run() {
       try {
-        File dirToList = new File(cwd + path);
+        File dirToList = new File(cwd + srcPath);
         String[] items = dirToList.list();
         if (items == null) {
           return "No such file or directory";
@@ -84,11 +86,11 @@ public class Commands {
 
   private static Command removeFile = new Command() {
     public String run() {
-      if (path.equals("")) {
+      if (srcPath.equals("")) {
         return "Please provide a file name";
       }
       try {
-        File toDelete = new File(cwd + path);
+        File toDelete = new File(cwd + srcPath);
         String response = toDelete.isDirectory() ? "Direcotry deleted Successfully" : "File deleted successfully";
         this.delete(toDelete);
         return response;
@@ -121,7 +123,7 @@ public class Commands {
   private static Command changeDirectory = new Command() {
     public String run() {
       try {
-        File dir = new File(cwd + path);
+        File dir = new File(cwd + srcPath);
         if (dir.isDirectory()) {
           cwd = dir.getCanonicalPath() + File.separator;
           return "Changed Directory!";
@@ -134,14 +136,37 @@ public class Commands {
     }
   };
 
+  private static Command rename = new Command() {
+    public String run() {
+      try {
+        File src = new File(cwd + srcPath);
+        File trgt = new File(cwd + targetPath);
+        if (!src.exists()) {
+          return "No such file or directory!";
+        }
+        if (trgt.exists()) {
+          return "Target file name already exists!";
+        }
+        if (src.renameTo(trgt)) {
+          return "File moved successfully";
+        } else {
+          return "Couldn't move file";
+        }
+      } catch (Exception e) {
+        return "Couldn't move file";
+      }
+    }
+  };
+
   private static Command clear = new Command() {
     public String run() {
       return "\033[H\033[2J";
     }
   };
 
-  public static void setPath(String name) {
-    path = name;
+  public static void setPath(String src, String trgt) {
+    srcPath = src;
+    targetPath = trgt;
   }
 
 }

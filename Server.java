@@ -1,5 +1,4 @@
 import java.net.*;
-import java.util.HashMap;
 import java.io.*;
 import commands.*;
 
@@ -30,12 +29,14 @@ public class Server {
         break;
       } else {
         if (Commands.CMDs.containsKey(splits[0])) {
-          if (splits.length > 1) {
-            Commands.setPath(splits[1]);
+          if (splits.length > 2) {
+            Commands.setPath(splits[1], splits[2]);
+          } else if (splits.length > 1) {
+            Commands.setPath(splits[1], "");
           }
           response = Commands.CMDs.get(splits[0]).run();
           dos.writeUTF(response);
-          Commands.setPath("");
+          Commands.setPath("", "");
         } else {
           dos.writeUTF("This command doesn't exist");
         }
