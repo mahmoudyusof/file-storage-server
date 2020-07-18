@@ -9,7 +9,7 @@ public class Server {
     Socket s = ss.accept();
     System.out.println("Client Connected.");
 
-    Commands.init();
+    Commands.init(s);
 
     DataInputStream dis = new DataInputStream(s.getInputStream());
     DataOutputStream dos = new DataOutputStream(s.getOutputStream());
@@ -25,7 +25,6 @@ public class Server {
       splits = line.split(" ");
 
       if (splits[0].equals("quit")) {
-        dos.writeUTF("bye!");
         break;
       } else {
         if (Commands.CMDs.containsKey(splits[0])) {
@@ -36,14 +35,14 @@ public class Server {
             Commands.setPath(splits[1], "");
           }
 
-          Commands.CMDs.get(splits[0]).run(dos);
+          Commands.CMDs.get(splits[0]).run();
           // dos.writeUTF(response);
           Commands.setPath("", "");
         } else {
           dos.writeUTF("This command doesn't exist");
         }
-        dos.writeUTF(Commands.cwd);
-        dos.flush();
+        // dos.writeUTF(Commands.cwd);
+        // dos.flush();
       }
     }
 

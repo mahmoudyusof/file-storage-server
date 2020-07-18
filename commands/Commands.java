@@ -3,14 +3,16 @@ package commands;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.util.HashMap;
 
 public class Commands {
 
   public static HashMap<String, Command> CMDs = new HashMap<>();
+  public static DataOutputStream dos;
 
-  public static void init() {
+  public static void init(Socket clientSocket) throws IOException {
     CMDs.put("touch", touch);
     CMDs.put("mkdir", mkdir);
     CMDs.put("clear", clear);
@@ -20,6 +22,8 @@ public class Commands {
     CMDs.put("cd", changeDirectory);
     CMDs.put("mv", rename);
     CMDs.put("cp", copy);
+
+    dos = new DataOutputStream(clientSocket.getOutputStream());
   }
 
   private static String srcPath = "";
@@ -27,7 +31,7 @@ public class Commands {
   public static String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/ignore/";
 
   private static Command touch = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
         return;
@@ -46,7 +50,7 @@ public class Commands {
   };
 
   private static Command mkdir = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a directory name");
         return;
@@ -65,7 +69,7 @@ public class Commands {
   };
 
   private static Command listDir = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       try {
         File dirToList = new File(cwd + srcPath);
         String[] items = dirToList.list();
@@ -85,13 +89,13 @@ public class Commands {
   };
 
   private static Command getWorkingDir = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       dos.writeUTF(cwd);
     }
   };
 
   private static Command removeFile = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
         return;
@@ -128,7 +132,7 @@ public class Commands {
   };
 
   private static Command changeDirectory = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       try {
         File dir = new File(cwd + srcPath);
         if (dir.isDirectory()) {
@@ -144,7 +148,7 @@ public class Commands {
   };
 
   private static Command rename = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       try {
         File src = new File(cwd + srcPath);
         File trgt = new File(cwd + targetPath);
@@ -168,7 +172,7 @@ public class Commands {
   };
 
   private static Command copy = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       try {
         File src = new File(cwd + srcPath);
         File trgt = new File(cwd + targetPath);
@@ -191,7 +195,7 @@ public class Commands {
   };
 
   private static Command clear = new Command() {
-    public void run(DataOutputStream dos) throws IOException {
+    public void run() throws IOException {
       dos.writeUTF("\033[H\033[2J");
     }
   };

@@ -20,14 +20,18 @@ public class Client {
       msg = scan.nextLine();
       dos.writeUTF(msg);
       dos.flush();
+      if (msg.equals("quit")) {
+        System.out.println("bye!");
+        break;
+      }
 
       res = dis.readUTF();
       System.out.println(res);
       System.out.flush();
-      if (res.equals("bye!")) {
-        break;
-      }
-      res = dis.readUTF();
+
+      dos.writeUTF("cwd");
+      dos.flush();
+      res = dis.readUTF(); // this returns the current working directory
       System.out.print("\u001B[32m" + res + "\u001B[0m$ ");
 
     }
