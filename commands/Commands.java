@@ -2,7 +2,9 @@ package commands;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ public class Commands {
 
   public static HashMap<String, Command> CMDs = new HashMap<>();
   public static DataOutputStream dos;
+  public static Socket s;
 
   public static void init(Socket clientSocket) throws IOException {
     CMDs.put("touch", touch);
@@ -22,8 +25,10 @@ public class Commands {
     CMDs.put("cd", changeDirectory);
     CMDs.put("mv", rename);
     CMDs.put("cp", copy);
+    CMDs.put("download", download);
 
     dos = new DataOutputStream(clientSocket.getOutputStream());
+    s = clientSocket;
   }
 
   private static String srcPath = "";
@@ -190,6 +195,30 @@ public class Commands {
 
       } catch (Exception e) {
         dos.writeUTF("Couldn't move file");
+      }
+    }
+  };
+
+  private static Command download = new Command() {
+    public void run() throws IOException {
+      try {
+        File file = new File(cwd + srcPath);
+        FileInputStream fr = new FileInputStream(cwd + srcPath);
+        byte b[] = new byte[(int) file.length()];
+        fr.read(b, 0, b.length);
+        fr.close();
+
+        OutputStream os = s.getOutputStream();
+        dos.writeInt(b.length);
+        dos.flush();
+
+        os.write(b, 0, b.length);
+        os.flush();
+        dos.writeUTF("successful download");
+        dos.flush();
+      } catch (Exception e) {
+        dos.writeUTF(e.getMessage());
+        dos.flush();
       }
     }
   };
