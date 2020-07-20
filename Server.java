@@ -45,7 +45,7 @@ public class Server {
         // dos.flush();
       }
     }
-
+    System.out.println("Client disconnected peacfully!");
     dos.close();
     dis.close();
     s.close();

@@ -53,41 +53,30 @@ public class Client {
           System.out.flush();
         }
 
-        // if (res.equals("No such file on server")) {
-        // System.out.println(res);
-        // } else {
-        // int size = Integer.parseInt(res);
-        // String fileName = msg.split(" ")[2];
-        // fr = new FileOutputStream(System.getProperty("user.dir") + File.separator +
-        // fileName);
-        // byte b[] = new byte[size];
-        // is.read(b, 0, b.length);
-        // fr.write(b, 0, b.length);
-        // fr.close();
-
-        // res = dis.readUTF();
-        // System.out.println(res);
-        // System.out.flush();
-        // }
       } else if (msg.split(" ")[0].equals("upload")) {
         dos.writeUTF("upload " + msg.split(" ")[2]);
         dos.flush();
 
         String fileName = msg.split(" ")[1];
         File file = new File(fileName);
-        FileInputStream fis = new FileInputStream(file);
-        byte b[] = new byte[(int) file.length()];
-        fis.read(b, 0, b.length);
-        fis.close();
 
-        dos.writeInt(b.length);
-        OutputStream os = s.getOutputStream();
-        os.write(b);
-        os.flush();
+        if (!file.exists() || file.isDirectory()) {
+          dos.writeUTF("No such file");
+        } else {
+          FileInputStream fis = new FileInputStream(file);
+          byte b[] = new byte[(int) file.length()];
+          fis.read(b, 0, b.length);
+          fis.close();
 
+          dos.writeUTF(String.format("%d", b.length));
+          OutputStream os = s.getOutputStream();
+          os.write(b);
+          os.flush();
+        }
         res = dis.readUTF();
         System.out.println(res);
         System.out.flush();
+
       } else {
         dos.writeUTF(msg);
         dos.flush();

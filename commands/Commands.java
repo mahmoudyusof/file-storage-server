@@ -228,15 +228,19 @@ public class Commands {
 
   private static Command upload = new Command() {
     public void run() throws IOException {
-      int size = dis.readInt();
-      FileOutputStream fr = new FileOutputStream(cwd + srcPath);
-      InputStream is = s.getInputStream();
-      byte b[] = new byte[size];
-      is.read(b, 0, b.length);
-      fr.write(b, 0, b.length);
-      fr.close();
+      try {
+        int size = Integer.parseInt(dis.readUTF());
+        FileOutputStream fr = new FileOutputStream(cwd + srcPath);
+        InputStream is = s.getInputStream();
+        byte b[] = new byte[size];
+        is.read(b, 0, b.length);
+        fr.write(b, 0, b.length);
+        fr.close();
 
-      dos.writeUTF("File uploaded successfully!");
+        dos.writeUTF("File uploaded successfully!");
+      } catch (NumberFormatException e) {
+        dos.writeUTF("No such file on client");
+      }
     }
   };
 
