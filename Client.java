@@ -1,9 +1,11 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.*;
 import java.util.Scanner;
 
@@ -39,6 +41,25 @@ public class Client {
         is.read(b, 0, b.length);
         fr.write(b, 0, b.length);
         fr.close();
+
+        res = dis.readUTF();
+        System.out.println(res);
+        System.out.flush();
+      } else if (msg.split(" ")[0].equals("upload")) {
+        dos.writeUTF("upload " + msg.split(" ")[2]);
+        dos.flush();
+
+        String fileName = msg.split(" ")[1];
+        File file = new File(fileName);
+        FileInputStream fis = new FileInputStream(file);
+        byte b[] = new byte[(int) file.length()];
+        fis.read(b, 0, b.length);
+        fis.close();
+
+        dos.writeInt(b.length);
+        OutputStream os = s.getOutputStream();
+        os.write(b);
+        os.flush();
 
         res = dis.readUTF();
         System.out.println(res);

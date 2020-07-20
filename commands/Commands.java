@@ -1,10 +1,6 @@
 package commands;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -13,6 +9,7 @@ public class Commands {
 
   public static HashMap<String, Command> CMDs = new HashMap<>();
   public static DataOutputStream dos;
+  public static DataInputStream dis;
   public static Socket s;
 
   public static void init(Socket clientSocket) throws IOException {
@@ -26,8 +23,10 @@ public class Commands {
     CMDs.put("mv", rename);
     CMDs.put("cp", copy);
     CMDs.put("download", download);
+    CMDs.put("upload", upload);
 
     dos = new DataOutputStream(clientSocket.getOutputStream());
+    dis = new DataInputStream(clientSocket.getInputStream());
     s = clientSocket;
   }
 
@@ -220,6 +219,20 @@ public class Commands {
         dos.writeUTF(e.getMessage());
         dos.flush();
       }
+    }
+  };
+
+  private static Command upload = new Command() {
+    public void run() throws IOException {
+      int size = dis.readInt();
+      FileOutputStream fr = new FileOutputStream(cwd + srcPath);
+      InputStream is = s.getInputStream();
+      byte b[] = new byte[size];
+      is.read(b, 0, b.length);
+      fr.write(b, 0, b.length);
+      fr.close();
+
+      dos.writeUTF("File uploaded successfully!");
     }
   };
 
