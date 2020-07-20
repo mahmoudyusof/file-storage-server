@@ -202,13 +202,17 @@ public class Commands {
     public void run() throws IOException {
       try {
         File file = new File(cwd + srcPath);
+        if (!file.exists() || file.isDirectory()) {
+          dos.writeUTF("No such file on server");
+          return;
+        }
         FileInputStream fr = new FileInputStream(cwd + srcPath);
         byte b[] = new byte[(int) file.length()];
         fr.read(b, 0, b.length);
         fr.close();
 
         OutputStream os = s.getOutputStream();
-        dos.writeInt(b.length);
+        dos.writeUTF(String.format("%d", b.length));
         dos.flush();
 
         os.write(b, 0, b.length);

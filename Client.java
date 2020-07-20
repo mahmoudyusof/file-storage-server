@@ -34,17 +34,41 @@ public class Client {
         dos.writeUTF("download " + msg.split(" ")[1]);
         dos.flush();
 
-        int size = dis.readInt();
-        String fileName = msg.split(" ")[2];
-        fr = new FileOutputStream(System.getProperty("user.dir") + File.separator + fileName);
-        byte b[] = new byte[size];
-        is.read(b, 0, b.length);
-        fr.write(b, 0, b.length);
-        fr.close();
-
         res = dis.readUTF();
-        System.out.println(res);
-        System.out.flush();
+
+        try {
+          int size = Integer.parseInt(res);
+          String fileName = msg.split(" ")[2];
+          fr = new FileOutputStream(System.getProperty("user.dir") + File.separator + fileName);
+          byte b[] = new byte[size];
+          is.read(b, 0, b.length);
+          fr.write(b, 0, b.length);
+          fr.close();
+
+          res = dis.readUTF();
+          System.out.println(res);
+          System.out.flush();
+        } catch (NumberFormatException e) {
+          System.out.println(res);
+          System.out.flush();
+        }
+
+        // if (res.equals("No such file on server")) {
+        // System.out.println(res);
+        // } else {
+        // int size = Integer.parseInt(res);
+        // String fileName = msg.split(" ")[2];
+        // fr = new FileOutputStream(System.getProperty("user.dir") + File.separator +
+        // fileName);
+        // byte b[] = new byte[size];
+        // is.read(b, 0, b.length);
+        // fr.write(b, 0, b.length);
+        // fr.close();
+
+        // res = dis.readUTF();
+        // System.out.println(res);
+        // System.out.flush();
+        // }
       } else if (msg.split(" ")[0].equals("upload")) {
         dos.writeUTF("upload " + msg.split(" ")[2]);
         dos.flush();
