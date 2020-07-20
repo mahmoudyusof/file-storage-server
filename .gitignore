@@ -1,5 +1,5 @@
 *.class
-ignore/
+server/
 client/
 downloads/
 .vscode/

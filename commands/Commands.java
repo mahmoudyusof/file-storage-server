@@ -7,34 +7,34 @@ import java.util.HashMap;
 
 public class Commands {
 
-  public static HashMap<String, Command> CMDs = new HashMap<>();
-  public static DataOutputStream dos;
-  public static DataInputStream dis;
-  public static Socket s;
+  public HashMap<String, Command> CMDs = new HashMap<>();
+  public DataOutputStream dos;
+  public DataInputStream dis;
+  public Socket s;
 
-  public static void init(Socket clientSocket) throws IOException {
-    CMDs.put("touch", touch);
-    CMDs.put("mkdir", mkdir);
-    CMDs.put("clear", clear);
-    CMDs.put("ls", listDir);
-    CMDs.put("cwd", getWorkingDir);
-    CMDs.put("rm", removeFile);
-    CMDs.put("cd", changeDirectory);
-    CMDs.put("mv", rename);
-    CMDs.put("cp", copy);
-    CMDs.put("download", download);
-    CMDs.put("upload", upload);
+  public Commands(Socket clientSocket) throws IOException {
+    this.CMDs.put("touch", this.touch);
+    this.CMDs.put("mkdir", this.mkdir);
+    this.CMDs.put("clear", this.clear);
+    this.CMDs.put("ls", this.listDir);
+    this.CMDs.put("cwd", this.getWorkingDir);
+    this.CMDs.put("rm", this.removeFile);
+    this.CMDs.put("cd", this.changeDirectory);
+    this.CMDs.put("mv", this.rename);
+    this.CMDs.put("cp", this.copy);
+    this.CMDs.put("download", this.download);
+    this.CMDs.put("upload", this.upload);
 
-    dos = new DataOutputStream(clientSocket.getOutputStream());
-    dis = new DataInputStream(clientSocket.getInputStream());
-    s = clientSocket;
+    this.dos = new DataOutputStream(clientSocket.getOutputStream());
+    this.dis = new DataInputStream(clientSocket.getInputStream());
+    this.s = clientSocket;
   }
 
-  private static String srcPath = "";
-  private static String targetPath = "";
-  public static String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/ignore/";
+  private String srcPath = "";
+  private String targetPath = "";
+  public String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/server/";
 
-  private static Command touch = new Command() {
+  private Command touch = new Command() {
     public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
@@ -53,7 +53,7 @@ public class Commands {
     }
   };
 
-  private static Command mkdir = new Command() {
+  private Command mkdir = new Command() {
     public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a directory name");
@@ -72,7 +72,7 @@ public class Commands {
     }
   };
 
-  private static Command listDir = new Command() {
+  private Command listDir = new Command() {
     public void run() throws IOException {
       try {
         File dirToList = new File(cwd + srcPath);
@@ -92,13 +92,13 @@ public class Commands {
     }
   };
 
-  private static Command getWorkingDir = new Command() {
+  private Command getWorkingDir = new Command() {
     public void run() throws IOException {
       dos.writeUTF(cwd);
     }
   };
 
-  private static Command removeFile = new Command() {
+  private Command removeFile = new Command() {
     public void run() throws IOException {
       if (srcPath.equals("")) {
         dos.writeUTF("Please provide a file name");
@@ -135,7 +135,7 @@ public class Commands {
     }
   };
 
-  private static Command changeDirectory = new Command() {
+  private Command changeDirectory = new Command() {
     public void run() throws IOException {
       try {
         File dir = new File(cwd + srcPath);
@@ -151,7 +151,7 @@ public class Commands {
     }
   };
 
-  private static Command rename = new Command() {
+  private Command rename = new Command() {
     public void run() throws IOException {
       try {
         File src = new File(cwd + srcPath);
@@ -175,7 +175,7 @@ public class Commands {
     }
   };
 
-  private static Command copy = new Command() {
+  private Command copy = new Command() {
     public void run() throws IOException {
       try {
         File src = new File(cwd + srcPath);
@@ -198,7 +198,7 @@ public class Commands {
     }
   };
 
-  private static Command download = new Command() {
+  private Command download = new Command() {
     public void run() throws IOException {
       try {
         File file = new File(cwd + srcPath);
@@ -226,7 +226,7 @@ public class Commands {
     }
   };
 
-  private static Command upload = new Command() {
+  private Command upload = new Command() {
     public void run() throws IOException {
       try {
         int size = Integer.parseInt(dis.readUTF());
@@ -244,15 +244,15 @@ public class Commands {
     }
   };
 
-  private static Command clear = new Command() {
+  private Command clear = new Command() {
     public void run() throws IOException {
       dos.writeUTF("\033[H\033[2J");
     }
   };
 
-  public static void setPath(String src, String trgt) {
-    srcPath = src;
-    targetPath = trgt;
+  public void setPath(String src, String trgt) {
+    this.srcPath = src;
+    this.targetPath = trgt;
   }
 
 }
