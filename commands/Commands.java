@@ -12,6 +12,12 @@ public class Commands {
   public DataInputStream dis;
   public Socket s;
 
+  public static final String RESET = "\u001B[0m";
+  public static final String BLACK = "\u001B[30m";
+  public static final String CYAN = "\u001B[36m";
+
+  public static final String YELLOW_BG = "\u001B[43m";
+
   public Commands(Socket clientSocket) throws IOException {
     this.CMDs.put("touch", this.touch);
     this.CMDs.put("mkdir", this.mkdir);
@@ -24,6 +30,7 @@ public class Commands {
     this.CMDs.put("cp", this.copy);
     this.CMDs.put("download", this.download);
     this.CMDs.put("upload", this.upload);
+    this.CMDs.put("help", this.help);
 
     this.dos = new DataOutputStream(clientSocket.getOutputStream());
     this.dis = new DataInputStream(clientSocket.getInputStream());
@@ -33,6 +40,23 @@ public class Commands {
   private String srcPath = "";
   private String targetPath = "";
   public String cwd = "/home/mahmoud/projects/java-stuff/FileStorageServer/server/";
+
+  private Command help = new Command() {
+    public void run() throws IOException {
+      dos.writeUTF(
+          CYAN + "\ntouch " + RESET + YELLOW_BG + BLACK + "<filename>" + RESET + " => create new file\n" 
+          + CYAN + "mkdir " + RESET + YELLOW_BG + BLACK + "<dirname>" + RESET + " => create new directory\n" 
+          + CYAN + "ls " + RESET + YELLOW_BG + BLACK + "[<dirname>]" + RESET + " => list directory content\n" 
+          + CYAN + "cwd " + RESET + "=> print current working directory\n" 
+          + CYAN + "rm " + RESET + YELLOW_BG + BLACK + "<name>" + RESET + " => remove file or directory\n"
+          + CYAN + "cd " + RESET + YELLOW_BG + BLACK + "<dirname>" + RESET + " => change working directory\n"
+          + CYAN + "mv " + RESET + YELLOW_BG + BLACK + "<srcFilePath>" + RESET + " " + YELLOW_BG + BLACK + "<targetFilePath> " + RESET + " => move file\n"
+          + CYAN + "cp " + RESET + YELLOW_BG + BLACK + "<srcFilePath>" + RESET + " " + YELLOW_BG + BLACK + "<targetFilePath> " + RESET + " => copy file\n"
+          + CYAN + "download " + RESET + YELLOW_BG + BLACK + "<srcFileOnServer>" + RESET + " " + YELLOW_BG + BLACK + "<targetPathOnClient> " + RESET + " => download file\n" 
+          + CYAN + "upload " + RESET + YELLOW_BG + BLACK + "<srcFileOnClient>" + RESET + " " + YELLOW_BG + BLACK + "<targetPathOnServer> " + RESET + " => upload file\n"
+          + CYAN + "quit\n");
+    }
+  };
 
   private Command touch = new Command() {
     public void run() throws IOException {
